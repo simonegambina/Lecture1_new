@@ -9,6 +9,7 @@ class View:
         self._page.title = "TDP 2026 - Software Gestionale"
         self._page.horizontal_alignment = "CENTER"
         self._page.theme_mode = ft.ThemeMode.LIGHT
+        self._txtInNomeP = None
         # self._page.update() -- questo va fatto ogni volta che modifichi qualcosa. Oppure ti crei un metodo (vedi in basso)
         self.update_page()
 

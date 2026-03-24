@@ -36,7 +36,7 @@ class GestoreOrdini:
         #Assicuriamoci che un ordine da processare esista
         if not self._ordini_da_processare:
             print("Non ci sono ordini in coda.")
-            return False
+            return False, Ordine([], ClienteRecord("","",""))
 
         #Se esiste, gestiamo il primo in coda
         ordine = self._ordini_da_processare.popleft() # Logica FIFO
@@ -57,16 +57,21 @@ class GestoreOrdini:
         self._ordini_processati.append(ordine)
 
         print("Ordine correttamente processato")
-        return True
+        return True, ordine
 
     def processa_tutti_gli_ordini(self):
         """Processa tutti gli ordini attualmente presenti in coda."""
         print(60*"-")
         print(f"Processando {len(self._ordini_da_processare)} ordini")
+
+        ordini = []
+
         while self._ordini_da_processare:
-            self.processa_prossimo_ordine()
+            _, ordine = self.processa_prossimo_ordine()
+            ordini.append(ordine)
 
         print("Tutti gli ordini sono stati processati.")
+        return ordini
 
     def get_statistiche_prodotti(self, top_n: int = 5):
         "Questo metodo restituisce info sui prodotti più venduti."
@@ -100,6 +105,23 @@ class GestoreOrdini:
         for cat, fatturato in self.get_distribuzione_categoria():
             print(f"{cat} : {fatturato}")
 
+    def get_riepilogo(self):
+        """restituisce una stringa con le info di massima."""
+        sommario = ""
+        sommario += "\n" + 60*"-"
+        sommario += f"\n Ordini correttamente gestiti: {len(self._ordini_processati)}"
+        sommario += f"\n Ordini in coda: {len(self._ordini_da_processare)}"
+
+        sommario += "\n Prodotti più venduti: "
+        for prod, quantita in self.get_statistiche_prodotti():
+            sommario += f"\n {prod} : {quantita}"
+
+        sommario += f"\n Fatturato per categoria:"
+        for cat, fatturato in self.get_distribuzione_categoria():
+            sommario += f"\n {cat} : {fatturato}"
+
+        sommario += "\n" + 60 * "-"
+        return sommario
 
 def test_modulo():
     sistema = GestoreOrdini()
